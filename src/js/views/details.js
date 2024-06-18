@@ -1,7 +1,7 @@
-// src/js/views/details.js
 import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
+import '../../styles/details.css';
 
 export const Details = () => {
     const { store, actions } = useContext(Context);
@@ -49,8 +49,14 @@ export const Details = () => {
                     <label className="form-label">Address</label>
                     <input type="text" className="form-control" name="address" value={contact.address} onChange={handleChange} required />
                 </div>
-                <button type="submit" className="btn btn-primary">{store.selectedContact ? "Update contact" : "Save contact"}</button>
-                <Link to="/" className="btn btn-secondary ms-2">or get back to contacts</Link>
+                <div className="d-flex justify-content-between">
+                    <button type="submit" className="btn btn-success">
+                        <i className="fas fa-save me-2"></i>{store.selectedContact ? "Update contact" : "Save contact"}
+                    </button>
+                    <Link to="/" className="btn btn-secondary ms-2">
+                        <i className="fas fa-arrow-left me-2"></i>Return to list of contacts
+                    </Link>
+                </div>
             </form>
         </div>
     );

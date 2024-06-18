@@ -1,0 +1,24 @@
+.container {
+    max-width: 1200px;
+}
+
+.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary, .btn-danger, .btn-success {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-primary:hover, .btn-danger:hover, .btn-warning:hover, .btn-success:hover {
+    background-color: #0056b3; /* Adjust the hover color for buttons */
+    color: #fff;
+}

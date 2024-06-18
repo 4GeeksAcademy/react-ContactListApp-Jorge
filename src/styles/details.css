@@ -1,0 +1,19 @@
+.container {
+    max-width: 600px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.btn-primary, .btn-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    background-color: #0056b3;
+    color: #fff;
+}

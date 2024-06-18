@@ -5,7 +5,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             selectedContact: null
         },
         actions: {
-            // Fetch all contacts
+            // Fetch all existing contacts in agenda + check if agenda exists in API
             fetchContacts: () => {
                 fetch('https://playground.4geeks.com/contact/agendas/Jorge_Enrique/contacts')
                     .then(response => {
@@ -32,7 +32,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             })
                             .then(response => response.json())
                             .then(() => {
-                                alert('Su agenda ha sido creada dentro de la base de datos. Por favor, recargue la página');
+                                alert('Su agenda ha sido creada dentro de la base de datos. Por favor, recargue la página.');
                             })
                             .catch(postError => console.error('Error creating agenda:', postError));
                         }
@@ -45,7 +45,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({ contacts: JSON.parse(localContacts) });
                 }
             },
-            // Add a new contact
+            // Add a new contact with POST
             addContact: (contact) => {
                 fetch('https://playground.4geeks.com/contact/agendas/Jorge_Enrique/contacts', {
                     method: 'POST',
@@ -63,7 +63,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch(error => console.error('Error adding contact:', error));
             },
-            // Update an existing contact
+            // Update an existing contact with PUT
             updateContact: (contact) => {
                 fetch(`https://playground.4geeks.com/contact/agendas/Jorge_Enrique/contacts/${contact.id}`, {
                     method: 'PUT',
@@ -81,7 +81,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch(error => console.error('Error updating contact:', error));
             },
-            // Delete a contact
+            // Delete a contact with DELETE
             deleteContact: (id) => {
                 fetch(`https://playground.4geeks.com/contact/agendas/Jorge_Enrique/contacts/${id}`, {
                     method: 'DELETE'

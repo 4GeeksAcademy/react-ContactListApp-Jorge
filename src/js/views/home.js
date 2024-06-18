@@ -2,6 +2,7 @@
 import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
+import '../../styles/home.css';
 
 export const Home = () => {
     const { store, actions } = useContext(Context);
@@ -24,31 +25,33 @@ export const Home = () => {
 
     return (
         <div className="container mt-5">
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1>Contact List</h1>
-                <Link to="/details" className="btn btn-success" onClick={() => actions.clearSelectedContact()}>Add a new contact</Link>
+                <Link to="/details" className="btn btn-success" onClick={() => actions.clearSelectedContact()}>
+                    <i className="fas fa-plus-circle me-2"></i>Add a new contact
+                </Link>
             </div>
             <div className="row">
-                {Array.isArray(store.contacts) && store.contacts?.map(contact => (
-                    <div key={contact.id} className="col-md-4">
-                        <div className="card mb-4">
+                <div className="col-12">
+                    {Array.isArray(store.contacts) && store.contacts?.map(contact => (
+                        <div key={contact.id} className="card mb-4 shadow-sm">
                             <div className="card-body">
                                 <h5 className="card-title">{contact.name}</h5>
-                                <p className="card-text">{contact.address}</p>
-                                <p className="card-text">{contact.phone}</p>
-                                <p className="card-text">{contact.email}</p>
+                                <p className="card-text">Address: {contact.address}</p>
+                                <p className="card-text">Phone: {contact.phone}</p>
+                                <p className="card-text">e-mail: {contact.email}</p>
                                 <div className="d-flex justify-content-between">
-                                    <button className="btn btn-primary" onClick={() => handleEdit(contact)}>
-                                        <i className="fas fa-pencil-alt"></i>
+                                    <button className="btn btn-warning" onClick={() => handleEdit(contact)}>
+                                        <i className="fas fa-pencil-alt me-2"></i>Edit
                                     </button>
                                     <button className="btn btn-danger" onClick={() => actions.deleteContact(contact.id)}>
-                                        <i className="fas fa-trash-alt"></i>
+                                        <i className="fas fa-trash-alt me-2"></i>Delete
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
     );
