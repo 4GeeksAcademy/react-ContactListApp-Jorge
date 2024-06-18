@@ -1,12 +1,18 @@
 // src/js/views/details.js
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 
 export const Details = () => {
-    const { actions } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const [contact, setContact] = useState({ name: "", email: "", phone: "", address: "" });
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (store.selectedContact) {
+            setContact(store.selectedContact);
+        }
+    }, [store.selectedContact]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -15,13 +21,17 @@ export const Details = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        actions.addContact(contact);
+        if (store.selectedContact) {
+            actions.updateContact(contact);
+        } else {
+            actions.addContact(contact);
+        }
         navigate("/");
     };
 
     return (
         <div className="container mt-5">
-            <h1>Add a new contact</h1>
+            <h1>{store.selectedContact ? "Edit Contact" : "Add a new contact"}</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label className="form-label">Full Name</label>
@@ -39,7 +49,7 @@ export const Details = () => {
                     <label className="form-label">Address</label>
                     <input type="text" className="form-control" name="address" value={contact.address} onChange={handleChange} required />
                 </div>
-                <button type="submit" className="btn btn-primary">Save contact</button>
+                <button type="submit" className="btn btn-primary">{store.selectedContact ? "Update contact" : "Save contact"}</button>
                 <Link to="/" className="btn btn-secondary ms-2">or get back to contacts</Link>
             </form>
         </div>

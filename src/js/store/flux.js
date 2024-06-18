@@ -1,19 +1,49 @@
-// src/js/store/flux.js
 const getState = ({ getStore, getActions, setStore }) => {
     return {
         store: {
-            contacts: []
+            contacts: [],
+            selectedContact: null
         },
         actions: {
             // Fetch all contacts
             fetchContacts: () => {
                 fetch('https://playground.4geeks.com/contact/agendas/Jorge_Enrique/contacts')
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Contacts fetched:', data),  // Log para ver los datos recibidos
-                        setStore({ contacts: data });
+                    .then(response => {
+                        if (response.status === 404) {
+                            throw new Error('Agenda not found');
+                        }
+                        return response.json();
                     })
-                    .catch(error => console.error('Error fetching contacts:', error));
+                    .then(data => {
+                        console.log('Contacts fetched:', data.contacts);
+                        localStorage.setItem('contacts', JSON.stringify(data.contacts));  // Guardar en LocalStorage
+                        setStore({ contacts: data.contacts });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching contacts:', error);
+                        if (error.message === 'Agenda not found') {
+                            // Create new agenda
+                            fetch('https://playground.4geeks.com/contact/agendas/Jorge_Enrique', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ agenda_name: 'Jorge_Enrique' })
+                            })
+                            .then(response => response.json())
+                            .then(() => {
+                                alert('Su agenda ha sido creada dentro de la base de datos. Por favor, recargue la página');
+                            })
+                            .catch(postError => console.error('Error creating agenda:', postError));
+                        }
+                    });
+            },
+            // Load contacts from localStorage
+            loadContactsFromLocalStorage: () => {
+                const localContacts = localStorage.getItem('contacts');
+                if (localContacts) {
+                    setStore({ contacts: JSON.parse(localContacts) });
+                }
             },
             // Add a new contact
             addContact: (contact) => {
@@ -27,7 +57,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .then(response => response.json())
                     .then(data => {
                         const store = getStore();
-                        setStore({ contacts: [...store.contacts, data] });
+                        const updatedContacts = [...store.contacts, data];
+                        localStorage.setItem('contacts', JSON.stringify(updatedContacts));  // Guardar en LocalStorage
+                        setStore({ contacts: updatedContacts });
                     })
                     .catch(error => console.error('Error adding contact:', error));
             },
@@ -44,6 +76,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .then(data => {
                         const store = getStore();
                         const updatedContacts = store.contacts.map(c => c.id === data.id ? data : c);
+                        localStorage.setItem('contacts', JSON.stringify(updatedContacts));  // Guardar en LocalStorage
                         setStore({ contacts: updatedContacts });
                     })
                     .catch(error => console.error('Error updating contact:', error));
@@ -56,9 +89,18 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .then(() => {
                         const store = getStore();
                         const filteredContacts = store.contacts.filter(contact => contact.id !== id);
+                        localStorage.setItem('contacts', JSON.stringify(filteredContacts));  // Guardar en LocalStorage
                         setStore({ contacts: filteredContacts });
                     })
                     .catch(error => console.error('Error deleting contact:', error));
+            },
+            // Set selected contact
+            setSelectedContact: (contact) => {
+                setStore({ selectedContact: contact });
+            },
+            // Clear selected contact
+            clearSelectedContact: () => {
+                setStore({ selectedContact: null });
             }
         }
     };
